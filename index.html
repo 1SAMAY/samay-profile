@@ -18,6 +18,9 @@
     .stars { position: absolute; z-index: 1; inset: 0; background-image: radial-gradient(#e4d6ff 1px, transparent 1.5px), radial-gradient(#fff 1px, transparent 1.5px); background-size: 173px 173px, 251px 251px; background-position: 24px 61px, 113px 29px; opacity: .23; }
     .enter { position: fixed; z-index: 4; inset: 0; display: grid; place-items: center; border: 0; color: #fff; background: #000; font: inherit; font-size: clamp(1.25rem, 4vw, 2rem); font-weight: 700; cursor: pointer; transition: opacity .7s, visibility .7s; touch-action: manipulation; }
     .enter:hover { background: #000; }
+    .enter.loading { cursor: wait; }
+    .enter.loading::before { content: ""; width: 20px; height: 20px; margin: 0 auto 12px; border: 2px solid #ffffff55; border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .enter.hidden { opacity: 0; visibility: hidden; }
     main { position: relative; z-index: 2; min-height: 100svh; min-height: 100dvh; display: grid; place-items: center; padding: clamp(16px, 4vh, 32px) clamp(14px, 4vw, 20px); opacity: 0; transform: translateY(8px); transition: opacity .8s .1s, transform .8s .1s; }
     main.ready { opacity: 1; transform: none; }
@@ -48,7 +51,7 @@
   </style>
 </head>
 <body>
-  <div class="scene" aria-hidden="true"><video id="background-video" muted loop playsinline preload="none"><source src="background-4k.mp4" type="video/mp4"></video><div class="stars"></div><div class="grain"></div></div>
+  <div class="scene" aria-hidden="true"><video id="background-video" muted loop playsinline preload="auto"><source src="background-4k.mp4" type="video/mp4"></video><div class="stars"></div><div class="grain"></div></div>
   <div class="video-controls" aria-label="Video volume controls"><button id="mute-toggle" type="button" aria-label="Mute video" aria-pressed="false">🔊</button><input id="volume" type="range" min="0" max="1" step="0.01" value="0.55" aria-label="Video volume"></div>
   <button class="enter" type="button" aria-label="Enter profile">click to enter...</button>
   <main>
@@ -73,13 +76,23 @@
     const muteToggle = document.querySelector('#mute-toggle');
     const profileViews = document.querySelector('#profile-views');
     enter.addEventListener('click', () => {
+      const showProfile = () => {
+        enter.classList.add('hidden');
+        document.querySelector('main').classList.add('ready');
+      };
       document.body.classList.add('entered');
-      enter.classList.add('hidden');
-      document.querySelector('main').classList.add('ready');
+      enter.classList.add('loading');
+      enter.textContent = 'Loading video…';
+      enter.setAttribute('aria-busy', 'true');
       video.volume = Number(volume.value);
       video.muted = false;
       muteToggle.textContent = '🔊';
-      video.play().catch(() => { video.muted = true; muteToggle.textContent = '🔇'; });
+      video.addEventListener('playing', showProfile, { once: true });
+      video.play().catch(() => {
+        video.muted = true;
+        muteToggle.textContent = '🔇';
+        showProfile();
+      });
       fetch('https://countapi.mileshilliard.com/api/v1/hit/samay_profile_views_1samay_20261118', { cache: 'no-store' })
         .then(response => { if (!response.ok) throw new Error(); return response.json(); })
         .then(data => {
