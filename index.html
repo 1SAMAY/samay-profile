@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090a0d">
+  <title>Samay Dudhrejiya — profile</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100svh; color: #f7f6fb; background: #090a0d; overflow: hidden; }
+    .scene { position: fixed; inset: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 38%, #242235 0, #12121a 35%, #090a0d 75%); }
+    .scene video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: left center; transform: scale(1.12); transform-origin: left center; }
+    .scene::before, .scene::after { content: ""; position: absolute; z-index: 1; width: 54vw; aspect-ratio: 1; border-radius: 50%; filter: blur(90px); opacity: .22; pointer-events: none; }
+    .scene::before { background: #6842a3; top: -30%; left: -20%; }
+    .scene::after { background: #156d79; right: -24%; bottom: -46%; }
+    .grain { position: absolute; z-index: 1; inset: 0; opacity: .12; background-image: radial-gradient(#fff 0.6px, transparent .6px); background-size: 5px 5px; mask-image: linear-gradient(transparent, #000 20%, #000 80%, transparent); }
+    .stars { position: absolute; z-index: 1; inset: 0; background-image: radial-gradient(#e4d6ff 1px, transparent 1.5px), radial-gradient(#fff 1px, transparent 1.5px); background-size: 173px 173px, 251px 251px; background-position: 24px 61px, 113px 29px; opacity: .23; }
+    .enter { position: fixed; z-index: 4; inset: 0; display: grid; place-items: center; border: 0; color: #fff; background: rgba(0,0,0,.24); font: inherit; font-size: clamp(1.3rem, 3vw, 2rem); font-weight: 700; cursor: pointer; transition: opacity .7s, visibility .7s; }
+    .enter:hover { background: rgba(0,0,0,.15); }
+    .enter.hidden { opacity: 0; visibility: hidden; }
+    main { position: relative; z-index: 2; min-height: 100svh; display: grid; place-items: center; padding: 32px 20px; opacity: 0; transform: translateY(8px); transition: opacity .8s .1s, transform .8s .1s; }
+    main.ready { opacity: 1; transform: none; }
+    .card { width: min(100%, 430px); text-align: center; padding: 38px 30px 26px; border: 1px solid rgba(255,255,255,.2); border-radius: 26px; background: rgba(13,13,20,.24); box-shadow: 0 28px 100px #0005, inset 0 1px rgba(255,255,255,.12); backdrop-filter: blur(8px); }
+    .video-controls { position: fixed; z-index: 3; top: 16px; left: 16px; display: flex; align-items: center; gap: 10px; padding: 10px 13px; border: 1px solid #ffffff24; border-radius: 14px; background: #090a0d8c; color: white; opacity: 0; pointer-events: none; transition: opacity .3s; backdrop-filter: blur(12px); }
+    body.entered .video-controls { opacity: 1; pointer-events: auto; }
+    .video-controls button { border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+    .video-controls input { width: 92px; accent-color: #c4a3f2; cursor: pointer; }
+    h1 { margin: 0; font-size: 2.2rem; letter-spacing: -.055em; }
+    .tagline { margin: 6px 0 17px; color: #d4cfdf; font-size: .98rem; }
+    .motto { margin: 0 0 18px; color: #eee8f5; font-size: .96rem; }
+    .location { display: inline-flex; gap: 7px; align-items: center; color: #e2dbea; font-size: .9rem; }
+    .location svg { width: 15px; height: 15px; fill: #c4a3f2; }
+    .instagram { display: inline-flex; align-items: center; gap: 12px; max-width: 100%; margin: 20px auto; padding: 9px 16px 9px 9px; border: 1px solid #ffffff2b; border-radius: 16px; background: #ffffff12; color: inherit; text-decoration: none; transition: background .2s, transform .2s; }
+    .instagram:hover, .social:hover { background: #ffffff15; transform: translateY(-2px); }
+    .instagram-icon { display: block; width: 42px; height: 42px; flex: none; object-fit: cover; border-radius: 50%; }
+    .instagram span:last-child { text-align: left; font-size: .96rem; font-weight: 600; }
+    a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid #d9baff; outline-offset: 3px; }
+    .socials { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 3px; }
+    .social { min-width: 108px; padding: 11px 15px; border: 1px solid #ffffff1b; border-radius: 12px; color: #f5f2fa; background: #ffffff08; text-decoration: none; font-size: .88rem; transition: .2s; }
+    .footer { display: flex; justify-content: center; gap: 20px; margin-top: 27px; color: #b5afc2; font-size: .78rem; }
+    .footer span { display: inline-flex; align-items: center; gap: 6px; }
+    .footer svg { width: 14px; height: 14px; fill: #b6a2d2; }
+    @media (max-width: 480px) { .card { padding: 32px 20px 22px; } h1 { font-size: 1.9rem; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="scene" aria-hidden="true"><video id="background-video" muted loop playsinline preload="auto"><source src="https://github.com/1SAMAY/samay-profile/releases/download/v1.0/background-4k.mp4" type="video/mp4"></video><div class="stars"></div><div class="grain"></div></div>
+  <div class="video-controls" aria-label="Video volume controls"><button id="mute-toggle" type="button" aria-label="Mute video" aria-pressed="false">🔊</button><input id="volume" type="range" min="0" max="1" step="0.01" value="0.55" aria-label="Video volume"></div>
+  <button class="enter" type="button" aria-label="Enter profile">click to enter...</button>
+  <main>
+    <section class="card" aria-label="Profile">
+      <h1>Samay Dudhrejiya</h1>
+      <p class="tagline">Welcome to my profile</p>
+      <p class="motto">Choose kindness, always 🕊️</p>
+      <div class="location"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg><span>India</span></div>
+      <a class="instagram" href="https://www.instagram.com/samaydudhrejiya/" target="_blank" rel="noreferrer"><img class="instagram-icon" src="instagram-icon.png" alt=""><span>@samaydudhrejiya</span></a>
+      <nav class="socials" aria-label="Social links">
+        <a class="social" href="https://www.linkedin.com/in/samay-dudhrejiya" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a class="social" href="https://github.com/1SAMAY" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="social" href="https://discord.com/users/753906784627851305" target="_blank" rel="noreferrer">Discord</a>
+      </nav>
+      <div class="footer"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-5.5 0-10 7-10 7s4.5 7 10 7 10-7 10-7-4.5-7-10-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/><circle cx="12" cy="12" r="2"/></svg>Profile</span><span>Made for you</span></div>
+    </section>
+  </main>
+  <script>
+    const enter = document.querySelector('.enter');
+    const video = document.querySelector('#background-video');
+    const volume = document.querySelector('#volume');
+    const muteToggle = document.querySelector('#mute-toggle');
+    enter.addEventListener('click', () => {
+      document.body.classList.add('entered');
+      enter.classList.add('hidden');
+      document.querySelector('main').classList.add('ready');
+      video.volume = Number(volume.value);
+      video.muted = false;
+      muteToggle.textContent = '🔊';
+      video.play().catch(() => { video.muted = true; muteToggle.textContent = '🔇'; });
+    });
+    volume.addEventListener('input', () => { video.volume = Number(volume.value); video.muted = video.volume === 0; muteToggle.textContent = video.muted ? '🔇' : '🔊'; muteToggle.setAttribute('aria-pressed', String(video.muted)); });
+    muteToggle.addEventListener('click', () => { video.muted = !video.muted; muteToggle.textContent = video.muted ? '🔇' : '🔊'; muteToggle.setAttribute('aria-pressed', String(video.muted)); });
+  </script>
+</body>
+</html>
